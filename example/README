@@ -1,0 +1,8 @@
+1. Push the example couchapp:
+
+    couchapp push http://localhost:5984/mustache-couch-example
+
+
+2. View list fun output in browser:
+
+    open 'http://localhost:5984/mustache-couch-example/_design/example/_list/notes/all?include_docs=true'
