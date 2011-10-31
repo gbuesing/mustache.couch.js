@@ -1,6 +1,12 @@
 # mustache.couch.js
 A helper for streaming Mustache templates from CouchDB list functions.
 
+## Server-Side Templating Is Fast
+
+When you stream out fully templated rows to the client, the user starts seeing content immediately.
+
+Compare this to client-side templating, which doesn't present content as it streams in -- you need to receive an entire JSON response before you can eval it, template it, and then add it to the DOM. If you're presenting hundreds or thousands of rows, there will be a long delay before the user sees any content.
+
 ## Basic Example
 
 Assuming a [CouchApp](http://couchapp.org/) filesystem mapping for your design doc:
@@ -66,7 +72,7 @@ Or, a different layout can be specified:
     // will wrap template in layout at mycouchapp/templates/admin.html
     var template = require('vendor/mustache.couch').compile(this, 'notes', {layout: 'admin'});
     
-The layout *and* the area outside of the row template can be skipped via the ```rows_only``` option (useful for ajax refreshing of page content):
+The layout *and* the area outside of the row template can be skipped via the ```rows_only``` option (useful when you're doing an ajax refresh of page content):
 
     var template = require('vendor/mustache.couch').compile(this, 'notes', {rows_only: true});
 
@@ -86,11 +92,11 @@ If the row callback returns a false-y value (```false```, ```null```, ```undefin
 
 The row callback is optional -- when no row callback is supplied to stream(), the default callback is used, which just returns the row. This is sufficient if you're just showing the keys and values from, say, a reduce query.
 
-## Easy Pagination
+## Pagination
 
-As a convenience, mustache.couch.js renders the foot of the template with two additional keys: ```lastkey``` and ```lastkey_docid```. Values are the key and id of the last row returned from the view, stringified and URI encoded, for use in "more results"-style pagination links at the bottom of the page, e.g.:
+As a convenience, mustache.couch.js renders the foot of the template with two additional values: ```lastkey``` and ```lastkey_docid```. Values are the key and id of the last row returned from the view, stringified and URI encoded, for use in "more results"-style pagination links at the bottom of the page, e.g.:
 
-    <p><a href="notes?include_docs=true&startkey={{{lastkey}}}&skip=1">More...</a></p>
+    <p><a href="?include_docs=true&startkey={{{lastkey}}}&limit=100&skip=1">More...</a></p>
 
 ## HTTP Headers
 
@@ -123,6 +129,14 @@ mustache.couch.js can also be used inside show functions, via the show() functio
     }
 
 Note that show functions don't support response streaming (the view server buffers the output.)
+
+## A Warning About CouchDB 1.1.0 ETag Bug
+
+CouchDB 1.1.0 shipped with a bug in ETag generation for views: updates to docs included in views won't update the ETag supplied with the view. So if you do an ?include_docs=true query with conditional get, Couch 1.1.0 will return a 304 Not Modified, even if the docs have changed.
+
+Google Chrome appears to be doing conditional get by default; you can work around this by adding a timestamped param to the querystring.
+
+This bug has been fixed in the upcoming 1.1.1 release.
 
 ## License
 
