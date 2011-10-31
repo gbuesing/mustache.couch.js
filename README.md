@@ -136,7 +136,7 @@ CouchDB 1.1.0 shipped with a bug in ETag generation for views: updates to docs i
 
 Google Chrome appears to be doing conditional get by default; you can work around this by adding a timestamped param to the querystring.
 
-This bug has been fixed in the upcoming 1.1.1 release.
+This bug has been fixed in the CouchDB 1.1.1.
 
 ## License
 
