@@ -17,18 +17,18 @@ Templates need to be included in a templates/ subdirectory of your design doc. T
 
 Example template: ```mycouchapp/templates/notes.html```
 
-    ```html
-    <h1>{{title}}</h1>
-    
-    <table>
-      <!-- %ROWS -->
-      <tr>
-        <td>{{note}}</td>
-        <td>{{created_at}}</td>
-      </tr>
-      <!-- %ROWS -->
-    </table>
-    ```
+```html
+<h1>{{title}}</h1>
+
+<table>
+  <!-- %ROWS -->
+  <tr>
+    <td>{{note}}</td>
+    <td>{{created_at}}</td>
+  </tr>
+  <!-- %ROWS -->
+</table>
+```
 
 Inside list functions, you compile the template by passing in the design doc (```this``` in this context) and the name of the template. 
 
@@ -36,15 +36,15 @@ You then call stream() on the template, passing in the base data for the outer t
 
 Example: ```mycouchapp/lists/notes.js```
 
-    ```javascript
-    function(head, req) {
-      var template = require('vendor/mustache.couch').compile(this, 'notes');
-  
-      template.stream({title: 'Notes'}, function(row) {
-        return row.doc;
-      });
-    }
-    ```
+```javascript
+function(head, req) {
+  var template = require('vendor/mustache.couch').compile(this, 'notes');
+
+  template.stream({title: 'Notes'}, function(row) {
+    return row.doc;
+  });
+}
+```
 
 When you navigate to the this list function in a browser (e.g., ```_list/notes/someview?include_docs=true```), the posts.html template will be streamed: first the start of the template is sent, then each table row, then the end of the template.
 
@@ -56,37 +56,37 @@ Templates can optionally be wrapped in a layout. Template content will be insert
 
 Example layout: ```mycouchapp/templates/layout.html```
 
-    ```html
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>{{title}} - MyCouchApp</title>
-      </head>
-      <body>
-        <!-- %YIELD -->
-      </body>
-    </html>
-    ```
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}} - MyCouchApp</title>
+  </head>
+  <body>
+    <!-- %YIELD -->
+  </body>
+</html>
+```
     
 If a layout.html file exists in the templates directory, all templates will automatically be wrapped in the layout *unless* this option is explicitly overridden in the compile() function:
     
-    ```javascript
-    // template will *not* be wrapped in layout
-    var template = require('vendor/mustache.couch').compile(this, 'notes', {layout: null});
-    ```
+```javascript
+// template will *not* be wrapped in layout
+var template = require('vendor/mustache.couch').compile(this, 'notes', {layout: null});
+```
     
 Or, a different layout can be specified:
 
-    ```javascript
-    // will wrap template in layout at mycouchapp/templates/admin.html
-    var template = require('vendor/mustache.couch').compile(this, 'notes', {layout: 'admin'});
-    ```
+```javascript
+// will wrap template in layout at mycouchapp/templates/admin.html
+var template = require('vendor/mustache.couch').compile(this, 'notes', {layout: 'admin'});
+```
     
 The layout *and* the area outside of the row template can be skipped via the ```rows_only``` option (useful when you're doing an ajax refresh of page content):
 
-    ```javascript
-    var template = require('vendor/mustache.couch').compile(this, 'notes', {rows_only: true});
-    ```
+```javascript
+var template = require('vendor/mustache.couch').compile(this, 'notes', {rows_only: true});
+```
 
 ## Row Rendering
 
@@ -94,13 +94,13 @@ As show above, the row callback returns the data used for each rendering of the 
 
 The row callback is called with two arguments -- the row returned from getRow(), and the current row count. You can use the row count to detect if you need to show pagination in the template:
 
-    ```javascript
-    var data = {};
-    template.stream(data, function(row, i) {
-      if (i == req.query.limit) { data.show_pagination = true };
-      return row.doc;
-    });
-    ```
+```javascript
+var data = {};
+template.stream(data, function(row, i) {
+  if (i == req.query.limit) { data.show_pagination = true };
+  return row.doc;
+});
+```
 
 If the row callback returns a false-y value (```false```, ```null```, ```undefined```, or doesn't return at all), the row template won't be rendered for this row. This is useful if you want to build up an HTML table row with the values from multiple view rows.
 
@@ -110,45 +110,45 @@ The row callback is optional -- when no row callback is supplied to stream(), th
 
 As a convenience, mustache.couch.js renders the foot of the template with two additional values: ```lastkey``` and ```lastkey_docid```. Values are the key and id of the last row returned from the view, stringified and URI encoded, for use in "more results"-style pagination links at the bottom of the page, e.g.:
     
-    ```html
-    <p><a href="?include_docs=true&startkey={{{lastkey}}}&limit=100&skip=1">More...</a></p>
-    ```
+```html
+<p><a href="?include_docs=true&startkey={{{lastkey}}}&limit=100&skip=1">More...</a></p>
+```
 
 ## HTTP Headers
 
 Additional HTTP headers can be added to the response via the headers object on the template:
 
-    ```javascript
-    function(head, req) {
-      var template = require('vendor/mustache.couch').compile(this, 'notes');
-      template.headers['X-Foo'] = 'bar';
-      template.stream({title: "Notes"});
-    }
-    ```
+```javascript
+function(head, req) {
+  var template = require('vendor/mustache.couch').compile(this, 'notes');
+  template.headers['X-Foo'] = 'bar';
+  template.stream({title: "Notes"});
+}
+```
 
 ## Mustache Partials
 
 Mustache partials can be specified via the partials object on the template:
 
-    ```javascript
-    function(head, req) {
-      var template = require('vendor/mustache.couch').compile(this, 'notes');
-      template.partials['sidebar'] = "<h2>Sidebar for {{title}}<h2>";
-      template.stream({title: "Notes"});
-    }
-    ```
+```javascript
+function(head, req) {
+  var template = require('vendor/mustache.couch').compile(this, 'notes');
+  template.partials['sidebar'] = "<h2>Sidebar for {{title}}<h2>";
+  template.stream({title: "Notes"});
+}
+```
 
 ## Show Functions
 
 mustache.couch.js can also be used inside show functions, via the show() function on the template.
 
-    ```javascript
-    function(doc, req) {
-      var template = require('lib/mustache.couch').compile(this, 'note');
-  
-      template.show(doc);
-    }
-    ```
+```javascript
+function(doc, req) {
+  var template = require('lib/mustache.couch').compile(this, 'note');
+
+  template.show(doc);
+}
+```
 
 Note that show functions don't support response streaming (the view server buffers the output.)
 
