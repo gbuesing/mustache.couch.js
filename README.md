@@ -1,12 +1,6 @@
 # mustache.couch.js
 A helper for streaming Mustache templates from CouchDB list functions.
 
-## Server-Side Templating Is Fast
-
-When you stream out fully templated rows to the client, the user starts seeing content immediately.
-
-Compare this to client-side templating, which doesn't present content as it streams in -- you need to receive an entire JSON response before you can eval it, template it, and then add it to the DOM. If you're presenting hundreds or thousands of rows, there will be a long delay before the user sees any content.
-
 ## Basic Example
 
 Assuming a [CouchApp](http://couchapp.org/) filesystem mapping for your design doc:
@@ -166,6 +160,12 @@ function(doc, req) {
 ```
 
 Note that show functions don't support response streaming (the view server buffers the output.)
+
+## Server-side vs. Client-side Templating
+
+When you stream out fully templated rows to the client, the user starts seeing content immediately.
+
+Compare this to client-side templating, which doesn't present content as it streams in -- you need to receive an entire JSON response before you can eval it, template it, and then add it to the DOM. If you're presenting hundreds or thousands of rows, there will be a long delay before the user sees any content.
 
 ## A Warning About CouchDB 1.1.0 ETag Bug
 
