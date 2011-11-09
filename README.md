@@ -13,7 +13,7 @@ Assuming a [CouchApp](http://couchapp.org/) filesystem mapping for your design d
 
 Put mustache.couch.js and the CommonJS build of [mustache.js](http://github.com/janl/mustache.js) somewhere in your design doc tree (a vendor/ subdirectory is a good place for them.)
 
-Templates need to be included in a templates/ subdirectory of your design doc. The portion of the template that will be rendered for each row needs to be between a matching set of ```<!-- %ROWS -->``` comments.
+Templates need to be included in a templates/ subdirectory of your design doc. The portion of the template that will be rendered for each row should be enclosed in a Mustache section (```{{#rows}}...{{/rows}}``` is the default.)
 
 Example template: ```mycouchapp/templates/notes.html```
 
@@ -21,12 +21,12 @@ Example template: ```mycouchapp/templates/notes.html```
 <h1>{{title}}</h1>
 
 <table>
-  <!-- %ROWS -->
+  {{#rows}}
   <tr>
     <td>{{note}}</td>
     <td>{{created_at}}</td>
   </tr>
-  <!-- %ROWS -->
+  {{/rows}}
 </table>
 ```
 
@@ -52,7 +52,7 @@ Content-Type will be automatically set to "text/html; charset=utf-8" instead of 
 
 ## Layouts
 
-Templates can optionally be wrapped in a layout. Template content will be inserted in place of the ```<!-- %YIELD -->``` comment in the layout.
+Templates can optionally be wrapped in a layout. Template content will be inserted in place of the ```{{{yield}}}``` tag in the layout.
 
 Example layout: ```mycouchapp/templates/layout.html```
 
@@ -63,7 +63,7 @@ Example layout: ```mycouchapp/templates/layout.html```
     <title>{{title}} - MyCouchApp</title>
   </head>
   <body>
-    <!-- %YIELD -->
+    {{{yield}}}
   </body>
 </html>
 ```
@@ -88,9 +88,24 @@ The layout *and* the area outside of the row template can be skipped via the ```
 var template = require('vendor/mustache.couch').compile(this, 'notes', {rows_only: true});
 ```
 
+The tag used in the layout to insert the template content defaults to ```yield```, but this can be changed:
+
+```javascript
+var template = require('vendor/mustache.couch').compile(this, 'notes', {layout_tag: 'content'});
+```
+
 ## Row Rendering
 
-As show above, the row callback returns the data used for each rendering of the template inside the ```<!-- %ROWS -->``` comments. Inside the row template, the data supplied as the first argument to stream() is accessible as well, with values from the row callback taking precedence.
+As show above, the row callback returns the data used for each rendering of the template inside the ```{{#rows}}...{{/rows}}``` section. 
+
+The tag used to denote this section can be changed from the default via the ```rows_tag``` option to compile():
+
+```javascript
+// specify row template between {{#notes}}...{{/notes}}
+var template = require('vendor/mustache.couch').compile(this, 'notes', {rows_tag: 'notes'});
+```
+
+Inside the row template, the data supplied as the first argument to stream() is accessible as well, with values from the row callback taking precedence.
 
 The row callback is called with two arguments -- the row returned from getRow(), and the current row count. You can use the row count to detect if you need to show pagination in the template:
 

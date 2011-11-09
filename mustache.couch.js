@@ -69,9 +69,12 @@ function extractTemplateSections(ddoc, templateName, opts) {
   var layoutHTML = opts.skip_layout ? '' : ddoc.templates[opts.layout || 'layout'];
   var templateHTML = ddoc.templates[templateName];
   
-  // split at magic comments
-  var layoutParts = (layoutHTML || '').split('<!-- %YIELD -->', 2);
-  var templateParts = templateHTML.split('<!-- %ROWS -->', 3);
+  // split into parts
+  var layoutSeparator = '{{{' + (opts.layout_tag || 'yield')  + '}}}';
+  var layoutParts = (layoutHTML || '').split(layoutSeparator, 2);
+
+  var templateSeparator = new RegExp('{{[#/]' + (opts.rows_tag || 'rows')  + '}}');
+  var templateParts = templateHTML.split(templateSeparator, 3);
 
   return {
     header: [layoutParts[0], templateParts[0]].join(''),
