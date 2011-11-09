@@ -68,14 +68,14 @@ Example layout: ```mycouchapp/templates/layout.html```
 </html>
 ```
     
-If a layout.html file exists in the templates directory, all templates will automatically be wrapped in the layout *unless* this option is explicitly overridden in the compile() function:
+If a layout.html file exists in the templates directory, templates will automatically be wrapped in the layout *unless* this is explicitly overridden in the compile() function:
     
 ```javascript
 // template will *not* be wrapped in layout
-var template = require('vendor/mustache.couch').compile(this, 'notes', {layout: null});
+var template = require('vendor/mustache.couch').compile(this, 'notes', {skip_layout: true});
 ```
     
-Or, a different layout can be specified:
+A different layout name can be specified via the ```layout``` option:
 
 ```javascript
 // will wrap template in layout at mycouchapp/templates/admin.html
@@ -144,7 +144,7 @@ mustache.couch.js can also be used inside show functions, via the show() functio
 
 ```javascript
 function(doc, req) {
-  var template = require('lib/mustache.couch').compile(this, 'note');
+  var template = require('vendor/mustache.couch').compile(this, 'note');
 
   template.show(doc);
 }

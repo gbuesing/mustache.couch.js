@@ -65,14 +65,12 @@ function compileTemplate(ddoc, templateName, opts) {
 }
 
 function extractTemplateSections(ddoc, templateName, opts) {
-  var layoutName = (opts.layout !== undefined) ? opts.layout : 'layout';
-  
   // find template files
-  var layoutHTML = ddoc.templates[layoutName] || '';
+  var layoutHTML = opts.skip_layout ? '' : ddoc.templates[opts.layout || 'layout'];
   var templateHTML = ddoc.templates[templateName];
   
   // split at magic comments
-  var layoutParts = layoutHTML.split('<!-- %YIELD -->', 2);
+  var layoutParts = (layoutHTML || '').split('<!-- %YIELD -->', 2);
   var templateParts = templateHTML.split('<!-- %ROWS -->', 3);
 
   return {
