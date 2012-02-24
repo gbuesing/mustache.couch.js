@@ -7,7 +7,17 @@ Benefits of this server-side templating approach are:
 * Page content is rendered immediately, without an Ajax call to retrieve data after the page is rendered
 * Since the page is streamed to the browser via Transfer-Encoding: chunked, there will be no delay in the user seeing content, even with large datasets of hundreds or thousands of rows. Ajax-based solutions require buffering the entire result set in memory before any data can be displayed to the user.
 
-This repo also contains the browser-side library ```jquery.couch.listchanges.js``` for live updating the page via the changes feed. It's designed to play well with mustache.couch.js. For an example, see the example couchapp included in this repo.
+This repo also contains the browser-side library ```jquery.couch.listchanges.js``` for live updating the page via the changes feed. It's designed to play well with mustache.couch.js. 
+
+The best way to see how this works is to get the example CouchApp running locally, which takes less than a minute:
+
+```
+git clone https://github.com/gbuesing/mustache.couch.js.git && cd mustache.couch.js/example
+couchapp push http://localhost:5984/mustache-couch-example
+open 'http://localhost:5984/mustache-couch-example/_design/example/_list/notes/all?descending=true'
+```
+
+If your local CouchDB isn't in Admin Party mode, you'll need to add your admin credentials to the URL supplied to ```couchapp push```.
 
 ## Basic Example
 

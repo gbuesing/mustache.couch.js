@@ -25,7 +25,7 @@
   <script>
     $('form#new_note').submit(function(e) {
       e.preventDefault();
-      var note = $(this).find('input').val();
+      var note = $(this).find('input[name=note]').val();
 
       if (note.match(/\S/)) {
         $.couch.db('mustache-couch-example').saveDoc({
@@ -35,7 +35,9 @@
       };
 
       this.reset();
-    });
+    })
+    .find('input[name=note]')
+      .focus();
 
     $('[data-changes]').listChanges({
       success: function(elem, type) {
