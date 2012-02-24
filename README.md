@@ -1,5 +1,13 @@
 # mustache.couch.js
-A helper for streaming Mustache templates from CouchDB list functions.
+A server-side helper for streaming Mustache templates from CouchDB list functions. 
+
+Benefits of this server-side templating approach are:
+
+* No need to ship the Mustache library and templating logic to the browser
+* Page content is rendered immediately, without an Ajax call to retrieve data after the page is rendered
+* Since the page is streamed to the browser via Transfer-Encoding: chunked, there will be no delay in the user seeing content, even with large datasets of hundreds or thousands of rows. Ajax-based solutions require buffering the entire result set in memory before any data can be displayed to the user.
+
+This repo also contains the browser-side library ```jquery.couch.listchanges.js``` for live updating the page via the changes feed. It's designed to play well with mustache.couch.js. For an example, see the example couchapp included in this repo.
 
 ## Basic Example
 
@@ -161,12 +169,6 @@ function(doc, req) {
 
 Note that show functions don't support response streaming (the view server buffers the output.)
 
-## Server-side vs. Client-side Templating
-
-When you stream out fully templated rows to the client, the user starts seeing content immediately.
-
-Compare this to client-side templating, which doesn't present content as it streams in -- you need to receive an entire JSON response before you can eval it, template it, and then add it to the DOM. If you're presenting hundreds or thousands of rows, there will be a long delay before the user sees any content.
-
 ## A Warning About CouchDB 1.1.0 ETag Bug
 
 CouchDB 1.1.0 shipped with a bug in ETag generation for views: updates to docs included in views won't update the ETag supplied with the view. So if you do an ?include_docs=true query with conditional get, Couch 1.1.0 will return a 304 Not Modified, even if the docs have changed.
@@ -174,6 +176,10 @@ CouchDB 1.1.0 shipped with a bug in ETag generation for views: updates to docs i
 Google Chrome appears to be doing conditional get by default; you can work around this by adding a timestamped param to the querystring.
 
 This bug has been fixed in CouchDB 1.1.1.
+
+## mustache.js Spidermonkey Compatibility
+
+The 0.5.dev version of mustache.js won't work with pre-1.1.1 versions of CouchDB due to a Spidermonkey compatibility issue. For CouchDB 1.1.0 and prior, you'll need to stick to mustache.js 0.4.x.
 
 ## License
 
