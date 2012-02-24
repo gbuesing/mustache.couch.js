@@ -1,14 +1,18 @@
-<h1>{{title}}</h1>
+<h2>mustache.couch.js live updating example</h2>
 
-<table>
-  <tr>
-    <th>Note</th>
-    <th>Created</th>
-  </tr>
+<p><i>
+  Open this page in two browser windows - when you add a note, both will update.<br>
+  Refresh the page, and all notes will be rendered without an Ajax call.
+</i></p>
+
+<form id="new_note">
+  <label for="title">Add a note</label> 
+  <input type="text" name="title">
+  <button type="submit">Add</button>
+</form>
+
+<ul data-changes="newRows" data-update-seq="{{update_seq}}">
   {{#notes}}
-  <tr>
-    <td>{{note}}</td>
-    <td>{{created_at}}</td>
-  </tr>
+  <li data-key="{{key}}">{{note}}</li>
   {{/notes}}
-</table>
+</ul>

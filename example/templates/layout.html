@@ -3,10 +3,46 @@
   <head>
     <title>{{title}} - mustache.couch.js Demo</title>
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 18px;
+      color: #333333;
+    }
+    </style>
   </head>
   <body>
     
     {{{yield}}}
     
   </body>
+  
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="../../jquery.couch.listchanges.js"></script>
+  
+  <script>
+    $('form#new_note').submit(function(e) {
+      e.preventDefault();
+      var note = $(this).find('input').val();
+
+      if (note.match(/\S/)) {
+        $.couch.db('mustache-couch-example').saveDoc({
+          note: note, 
+          created_at: new Date()
+        });
+      };
+
+      this.reset();
+    });
+
+    $('[data-changes]').listChanges({
+      success: function(elem, type) {
+        if (type === 'newRows') {
+          elem.hide().fadeIn();
+        }
+      }
+    });
+  </script>
 </html>

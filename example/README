@@ -5,4 +5,4 @@
 
 2. View list fun output in browser:
 
-    open 'http://localhost:5984/mustache-couch-example/_design/example/_list/notes/all?include_docs=true'
+    open 'http://localhost:5984/mustache-couch-example/_design/example/_list/notes/all?desce ding=true'
