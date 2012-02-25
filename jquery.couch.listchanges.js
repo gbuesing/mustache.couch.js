@@ -46,7 +46,7 @@
       if (type === 'newRows') {
         delete params.limit;
         
-        var highkeyElem = params.descending ? container.children(':first') : container.children(':last');
+        var highkeyElem = params.descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
         var highkey = highkeyElem.attr('data-key');
         var highkey_docid = highkeyElem.attr('data-docid');
 
