@@ -26,8 +26,6 @@
  * The list fun needs to return the entire page for a standard request, and just the templated rows
  * for XHR requests (rows_only=true is appended to the XHR querystring as a convenience.)
  *
- * Note that this library only works when view params are in the querystring - rewritten urls may not work.
- *
  * See https://github.com/gbuesing/mustache.couch.js/tree/master/example
 */
 (function( $ ){
