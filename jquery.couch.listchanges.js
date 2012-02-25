@@ -39,6 +39,7 @@
     var dbname = unescape(window.location.pathname.split('/')[1]);
     var params = getQueryParams();
     params.rows_only = true;
+    var descending = opts.descending || params.descending;
     
     var queryForUpdates = function(cb) {
       var containerUpdateMethod = 'html';
@@ -46,11 +47,11 @@
       if (type === 'newRows') {
         delete params.limit;
         
-        var highkeyElem = params.descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
+        var highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
         var highkey = highkeyElem.attr('data-key');
         var highkey_docid = highkeyElem.attr('data-docid');
 
-        if (params.descending) {
+        if (descending) {
           containerUpdateMethod = 'prepend';
           
           if (highkey) {
