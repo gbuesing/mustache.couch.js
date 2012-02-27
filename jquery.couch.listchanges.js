@@ -34,16 +34,15 @@
 (function( $ ){
   
   $.fn.listChanges = function(opts) {
-    $.listChanges(this, opts);
+    listChanges(this, opts);
     return this;
   }
   
-  $.listChanges = function(container, opts) {
+  function listChanges(container, opts) {
     opts = opts || {};
     container = container.eq(0);
     var update_seq = opts.update_seq || container.attr('data-update-seq');
     var type = opts.type || container.attr('data-changes');
-    var dbname = unescape(window.location.pathname.split('/')[1]);
     var params = getQueryParams();
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true');
@@ -101,9 +100,10 @@
       });
     }
 
+    var dbname = unescape(window.location.pathname.split('/')[1]);
     var promise = $.couch.db(dbname).changes(update_seq);
     promise.onChange(queryForUpdates);
-    return promise;
+    container.data('changes-promise', promise);
   }
   
   // helper fun
