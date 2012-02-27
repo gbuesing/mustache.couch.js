@@ -23,6 +23,9 @@
  * as appropriate with the value of the descending querystring var.
  * "newRows" requires embedding the row key in each row in a data-key attribute.
  *
+ * The update_seq can optionally be specified in the data-update-seq attribute; this will save a call to
+ * retrieve the update_seq via Ajax after the page has loaded.
+ *
  * The list fun needs to return the entire page for a standard request, and just the templated rows
  * for XHR requests (rows_only=true is appended to the XHR querystring as a convenience.)
  *

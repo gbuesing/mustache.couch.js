@@ -9,15 +9,13 @@ Benefits of this server-side templating approach are:
 
 This repo also contains the browser-side library ```jquery.couch.listchanges.js``` for live updating the page via the changes feed. It's designed to play well with mustache.couch.js. 
 
-The best way to see how this works is to get the example CouchApp running locally, which takes less than a minute:
+***To see this in action, [check out the example app](http://gbues.iriscouch.com/mustache-couch-example/_design/example/_list/notes/all?descending=true)*** hosted on [IrisCouch](http://www.iriscouch.com/).
+
+You can easily pull down a local copy of the example app with the [CouchApp](http://couchapp.org/) ```clone``` command:
 
 ```
-git clone https://github.com/gbuesing/mustache.couch.js.git && cd mustache.couch.js/example
-couchapp push http://localhost:5984/mustache-couch-example
-open 'http://localhost:5984/mustache-couch-example/_design/example/_list/notes/all?descending=true'
+couchapp clone http://gbues.iriscouch.com/mustache-couch-example/_design/example mustache-couch-example
 ```
-
-If your local CouchDB isn't in Admin Party mode, you'll need to add your admin credentials to the URL supplied to ```couchapp push```.
 
 ## Basic Example
 
