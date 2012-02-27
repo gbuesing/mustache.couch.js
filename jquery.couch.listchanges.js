@@ -38,8 +38,9 @@
     var params = getQueryParams();
     params.rows_only = true;
     var descending = opts.descending || params.descending;
+    var inFlight = false;
     
-    var queryForUpdates = function(cb) {
+    var queryForUpdates = function() {
       var containerUpdateMethod = 'html';
       
       if (type === 'newRows') {
@@ -75,25 +76,26 @@
         url: window.location.pathname,
         data: params,
         dataType: 'html',
+        beforeSend: function() {
+          if (inFlight) { return false };
+          inFlight = true;
+          return true;
+        },
         success: function(data) {
-          if (data !== '') {
+          if (data && data.match(/\S/)) {
             var elem = $(data);
             container[containerUpdateMethod](elem);
             if (opts.success) { opts.success(elem, type) };
           }
+          inFlight = false;
         },
-        complete: cb()
+        error: function() {
+          inFlight = false;
+        }
       });
     }
-    
-    var inFlight = false;
 
-    $.couch.db(dbname).changes(update_seq).onChange(function() {
-      // inFlight guard ensures only one queryForUpdates request at a time
-      if (inFlight) { return };
-      inFlight = true;
-      queryForUpdates(function() { inFlight = false });
-    });
+    $.couch.db(dbname).changes(update_seq).onChange(queryForUpdates);
     
     return container;
   }
