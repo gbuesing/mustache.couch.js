@@ -32,9 +32,15 @@
  * See https://github.com/gbuesing/mustache.couch.js/tree/master/example
 */
 (function( $ ){
+  
   $.fn.listChanges = function(opts) {
+    $.listChanges(this, opts);
+    return this;
+  }
+  
+  $.listChanges = function(container, opts) {
     opts = opts || {};
-    var container = this.eq(0);
+    container = container.eq(0);
     var update_seq = opts.update_seq || container.attr('data-update-seq');
     var type = opts.type || container.attr('data-changes');
     var dbname = unescape(window.location.pathname.split('/')[1]);
@@ -95,9 +101,9 @@
       });
     }
 
-    $.couch.db(dbname).changes(update_seq).onChange(queryForUpdates);
-    
-    return container;
+    var promise = $.couch.db(dbname).changes(update_seq);
+    promise.onChange(queryForUpdates);
+    return promise;
   }
   
   // helper fun
