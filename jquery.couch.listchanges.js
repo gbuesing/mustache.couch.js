@@ -37,7 +37,7 @@
     var dbname = unescape(window.location.pathname.split('/')[1]);
     var params = getQueryParams();
     params.rows_only = true;
-    var descending = opts.descending || params.descending;
+    var descending = opts.descending || (params.descending === 'true');
     var inFlight = false;
     
     var queryForUpdates = function() {
