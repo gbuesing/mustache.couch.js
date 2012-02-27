@@ -41,6 +41,8 @@
     var inFlight = false;
     
     var queryForUpdates = function() {
+      if (inFlight) { return false };
+      inFlight = true;
       var containerUpdateMethod = 'html';
       
       if (type === 'newRows') {
@@ -76,11 +78,6 @@
         url: window.location.pathname,
         data: params,
         dataType: 'html',
-        beforeSend: function() {
-          if (inFlight) { return false };
-          inFlight = true;
-          return true;
-        },
         success: function(data) {
           if (data && data.match(/\S/)) {
             var elem = $(data);
