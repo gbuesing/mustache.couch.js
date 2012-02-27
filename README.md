@@ -9,7 +9,7 @@ Benefits of this server-side templating approach are:
 
 This repo also contains the browser-side library ```jquery.couch.listchanges.js``` for live updating the page via the changes feed. It's designed to play well with mustache.couch.js. 
 
-*To see this in action, [check out the example app](http://gbues.iriscouch.com/mustache-couch-example/_design/example/_list/notes/all?descending=true) hosted on [IrisCouch](http://www.iriscouch.com/).*
+#### To see this in action, [check out the example app](http://gbues.iriscouch.com/mustache-couch-example/_design/example/_list/notes/all?descending=true) hosted on [IrisCouch](http://www.iriscouch.com/).
 
 You can easily pull down a local copy of the example app with the [CouchApp](http://couchapp.org/) ```clone``` command:
 
