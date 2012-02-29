@@ -1,4 +1,4 @@
-/*
+ /*
  * jquery.couch.listchanges.js
  * A helper for using the CouchDB changes feed to update HTML views rendered from list funs
  *
@@ -43,7 +43,19 @@
     container = container.eq(0);
     var update_seq = opts.update_seq || container.attr('data-update-seq');
     var type = opts.type || container.attr('data-changes');
-    var params = getQueryParams();
+    
+    var urlPath, querystring;
+    if (opts.url) {
+      var urlParts = opts.url.split('?');
+      urlPath = urlParts[0];
+      querystring = urlParts[1] || '';
+    } else {
+      urlPath = window.location.pathname;
+      querystring = window.location.search.substr(1);
+    }
+    
+    var dbname = urlPath.split('/')[1];    
+    var params = getParams(querystring);
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true');
     var inFlight = false;
@@ -83,7 +95,7 @@
       
       $.ajax({
         type: 'GET',
-        url: window.location.pathname,
+        url: urlPath,
         data: params,
         dataType: 'html',
         success: function(data) {
@@ -100,17 +112,16 @@
       });
     }
 
-    var dbname = unescape(window.location.pathname.split('/')[1]);
     var promise = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
     promise.onChange(queryForUpdates);
     container.data('changes-promise', promise);
   }
   
   // helper fun
-  function getQueryParams() {
+  function getParams(querystring) {
     var params = {};
-    if (window.location.search.length > 1) {  
-      for (var aItKey, nKeyId = 0, aCouples = window.location.search.substr(1).split("&"); nKeyId < aCouples.length; nKeyId++) {  
+    if (querystring.length > 1) {  
+      for (var aItKey, nKeyId = 0, aCouples = querystring.split("&"); nKeyId < aCouples.length; nKeyId++) {  
         aItKey = aCouples[nKeyId].split("=");  
         params[unescape(aItKey[0])] = aItKey.length > 1 ? unescape(aItKey[1]) : null;  
       }  
