@@ -39,11 +39,9 @@
     .find('input[name=note]')
       .focus();
 
-    $('[data-changes]').listChanges({
-      success: function(elem, type) {
-        if (type === 'newRows') {
-          elem.hide().fadeIn();
-        }
+    $('[data-changes=newRows]').listChanges({
+      success: function(elem) {
+        elem.hide().fadeIn();
       }
     });
   </script>

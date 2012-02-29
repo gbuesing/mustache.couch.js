@@ -101,7 +101,7 @@
     }
 
     var dbname = unescape(window.location.pathname.split('/')[1]);
-    var promise = $.couch.db(dbname).changes(update_seq);
+    var promise = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
     promise.onChange(queryForUpdates);
     container.data('changes-promise', promise);
   }
