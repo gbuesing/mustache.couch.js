@@ -43,19 +43,11 @@
     container = container.eq(0);
     var update_seq = opts.update_seq || container.attr('data-update-seq');
     var type = opts.type || container.attr('data-changes');
-    
-    var urlPath, querystring;
-    if (opts.url) {
-      var urlParts = opts.url.split('?');
-      urlPath = urlParts[0];
-      querystring = urlParts[1] || '';
-    } else {
-      urlPath = window.location.pathname;
-      querystring = window.location.search.substr(1);
-    }
-    
+    var url = opts.url || window.location.pathname + window.location.search;
+    var urlParts = url.split('?');
+    var urlPath = urlParts[0];
+    var params = getParams(urlParts[1]);
     var dbname = urlPath.split('/')[1];    
-    var params = getParams(querystring);
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true');
     var inFlight = false;
