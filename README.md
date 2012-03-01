@@ -129,6 +129,8 @@ template.stream(data, function(row, i) {
 
 If the row callback returns a false-y value (```false```, ```null```, ```undefined```, or doesn't return at all), the row template won't be rendered for this row. This is useful if you want to build up an HTML table row with the values from multiple view rows.
 
+If you want to terminate row iteration early, you can return the string ```'stop'``` from the row callback.
+
 The row callback is optional -- when no row callback is supplied to stream(), the default callback is used, which just returns the row. This is sufficient if you're just showing the keys and values from, say, a reduce query.
 
 ## Pagination
