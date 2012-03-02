@@ -96,11 +96,11 @@ function renderRows(template, data, partials, rowCb) {
   
   while(row = getRow()) {
     count ++;
-    lastRow = row;
   
     if (rowData = rowCb(row, count)) {
       if (rowData === 'stop') break;
       render(template, mergeData(data, rowData), partials);
+      lastRow = row;
     }
   }
   
