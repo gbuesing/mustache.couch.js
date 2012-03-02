@@ -99,7 +99,7 @@ function renderRows(template, data, partials, rowCb) {
     lastRow = row;
   
     if (rowData = rowCb(row, count)) {
-      if (rowData === 'stop') { return {stop:true} };
+      if (rowData === 'stop') break;
       render(template, mergeData(data, rowData), partials);
     }
   }
