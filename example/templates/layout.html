@@ -23,6 +23,10 @@
   <script src="../../jquery.couch.listchanges.js"></script>
   
   <script>
+    // all that's required to enable change updates on the ul:
+    $('ul#notes').listChanges();
+  
+    // setup the form
     $('form#new_note').submit(function(e) {
       e.preventDefault();
       var note = $(this).find('input[name=note]').val();
@@ -38,11 +42,5 @@
     })
     .find('input[name=note]')
       .focus();
-
-    $('[data-changes=newRows]').listChanges({
-      success: function(elem) {
-        elem.hide().fadeIn();
-      }
-    });
   </script>
 </html>
