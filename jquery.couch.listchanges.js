@@ -90,6 +90,7 @@
         url: urlPath,
         data: params,
         dataType: 'html',
+        cache: false,
         success: function(data) {
           if (data && data.match(/\S/)) {
             var elem = $(data);
