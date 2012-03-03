@@ -23,7 +23,9 @@
   <script src="../../jquery.couch.listchanges.js"></script>
   
   <script>
-    // all that's required to enable change updates on the ul:
+    // all that's required to enable change updates on the ul.
+    // updateType and updateSeq are specified as data- attributes on ul,
+    // so they don't need to be specified as options here:
     $('ul#notes').listChanges();
   
     // setup the form

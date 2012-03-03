@@ -42,7 +42,7 @@
     opts = opts || {};
     container = container.eq(0);
     var update_seq = opts.updateSeq || container.attr('data-update-seq');
-    var type = opts.updateType || container.attr('data-changes') || 'all';
+    var type = opts.updateType || container.attr('data-update-type') || 'all';
     var url = opts.url || window.location.pathname + window.location.search;
     var urlParts = url.split('?');
     var urlPath = urlParts[0];
