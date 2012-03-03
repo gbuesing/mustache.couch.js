@@ -41,8 +41,8 @@
   function listChanges(container, opts) {
     opts = opts || {};
     container = container.eq(0);
-    var update_seq = opts.update_seq || container.attr('data-update-seq');
-    var type = opts.type || container.attr('data-changes');
+    var update_seq = opts.updateSeq || container.attr('data-update-seq');
+    var type = opts.updateType || container.attr('data-changes') || 'all';
     var url = opts.url || window.location.pathname + window.location.search;
     var urlParts = url.split('?');
     var urlPath = urlParts[0];
@@ -58,11 +58,11 @@
       var containerUpdateMethod = 'html';
       
       if (type === 'newRows') {
-        delete params.limit;
-        
         var highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
         var highkey = highkeyElem.attr('data-key');
         var highkey_docid = highkeyElem.attr('data-docid');
+        
+        if (highkey) { delete params.limit };
 
         if (descending) {
           containerUpdateMethod = 'prepend';
@@ -104,7 +104,9 @@
         }
       });
     }
-
+    
+    if (opts.preload) { queryForUpdates() };
+    
     var promise = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
     promise.onChange(queryForUpdates);
     container.data('changes-promise', promise);

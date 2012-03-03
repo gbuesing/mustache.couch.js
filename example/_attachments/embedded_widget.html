@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Widget Example - mustache.couch.js Demo</title>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 18px;
+      color: #333333;
+    }
+    #sidebar {
+      float: left;
+      margin-right: 20px;
+      background-color: #efefef;
+      padding: 5px 10px;
+    }
+    #main {
+      float: left;
+    }
+    </style>
+  </head>
+  <body>
+    <h2>mustache.couch.js live updating example (embedded widget version)</h2>
+    
+    <div id="sidebar">
+      <h3>Last 10 Notes</h3>
+      <ul id="notes"></ul>
+    </div>
+    
+    <div id="main">
+      <p>Content on left will live update.</p>
+      
+      <p><a href="_list/notes/all?descending=true">Back to list fun example</a></p>
+      
+      <p><img src="http://upload.wikimedia.org/wikipedia/commons/a/a5/Couchdb-logo.png"></p>
+    </div>
+    
+  </body>
+  
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="jquery.couch.listchanges.js"></script>
+  
+  <script>
+    // No rows are loaded when page loads, so specify preload: true to immediately populate with rows
+    // (otherwise, you'd have to wait for a change to come through to see content.)
+    $('ul#notes').listChanges({
+      url: '/mustache-couch-example/_design/example/_list/notes/all?descending=true&limit=10',
+      updateType: 'all', // all is default. or 'newRows' to have updates prepended
+      preload: true
+    });
+  </script>
+</html>
