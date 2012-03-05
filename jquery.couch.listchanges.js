@@ -2,7 +2,7 @@
  * jquery.couch.listchanges.js
  * A helper for using the CouchDB changes feed to update HTML views rendered from list funs
  *
- * Plays well with mustache.couch.js for server-side list fun rendering:
+ * Plays well with mustache.couch.js for server-side list fun HTML rendering:
  * http://github.com/gbuesing/mustache.couch.js
  *
  * Copyright 2011, Geoff Buesing
@@ -10,7 +10,7 @@
  *
  * Example:
  *
- *   <ul data-changes="newRows" data-update-seq="12345">
+ *   <ul data-update-type="newRows" data-update-seq="12345">
  *     <li data-key="key">Foo</li>
  *   </ul>
  *
@@ -18,10 +18,12 @@
  *      $('ul').listChanges();
  *   </script>
  *
- * When data-changes="true", inner html of container element will be replaced with returned rows.
- * When data-changes="newRows", new rows will be prepended or appended to the container
- * as appropriate with the value of the descending querystring var.
- * "newRows" requires embedding the row key in each row in a data-key attribute.
+ * When data-update-type="allRows", inner html of container element will be replaced with returned rows.
+ *
+ * When data-update-type="newRows", startkey/endkey will be adjusted to return only updated rows. 
+ * New rows will be prepended or appended to the container as appropriate with the value of the 
+ * descending querystring var. "newRows" requires embedding the row key in each row in a 
+ * data-key attribute.
  *
  * The update_seq can optionally be specified in the data-update-seq attribute; this will save a call to
  * retrieve the update_seq via Ajax after the page has loaded.
@@ -34,15 +36,13 @@
 (function( $ ){
   
   $.fn.listChanges = function(opts) {
-    listChanges(this, opts);
+    listChanges(this.eq(0), opts || {});
     return this;
   }
   
   function listChanges(container, opts) {
-    opts = opts || {};
-    container = container.eq(0);
     var update_seq = opts.updateSeq || container.attr('data-update-seq');
-    var type = opts.updateType || container.attr('data-update-type') || 'all';
+    var type = opts.updateType || container.attr('data-update-type') || 'allRows';
     var url = opts.url || window.location.pathname + window.location.search;
     var urlParts = url.split('?');
     var urlPath = urlParts[0];
@@ -109,14 +109,14 @@
     
     if (opts.preload) { container.trigger('update.listChanges') };
     
-    var promise = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
-    promise.onChange(function() {
+    var changes = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
+    changes.onChange(function() {
       container.trigger('update.listChanges');
     });
-    container.data('changes', promise);
+    container.data('changes', changes);
     
     container.bind('stop.listChanges', function() {
-      promise.stop();
+      changes.stop();
       container.removeData('changes');
       container.unbind('.listChanges');
     });
