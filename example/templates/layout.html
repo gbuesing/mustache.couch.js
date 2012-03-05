@@ -23,10 +23,18 @@
   <script src="../../jquery.couch.listchanges.js"></script>
   
   <script>
-    // all that's required to enable change updates on the ul.
+    // .listChanges() wires up the ul for live updating
+    //
     // updateType and updateSeq are specified as data- attributes on ul,
-    // so they don't need to be specified as options here:
-    $('ul#notes').listChanges();
+    // so they don't need to be specified as options here.
+    //
+    // success callback is called after DOM is updated; for updateType="newRows"
+    // the new rows will be passed to the callback
+    $('ul#notes').listChanges({
+      success: function(newRows) {
+        newRows.hide().fadeIn();
+      } 
+    });
   
     // setup the form
     $('form#new_note').submit(function(e) {

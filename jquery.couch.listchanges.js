@@ -55,11 +55,12 @@
     var queryForUpdates = function() {
       if (inFlight) { return false };
       inFlight = true;
-      var containerUpdateMethod = 'html';
+      var highkeyElem, containerUpdateMethod = 'html';
       
       if (updateType === 'newRows') {
         containerUpdateMethod = descending ? 'prepend' : 'append';
-        updateParamsForNewRowsQuery(params, container, descending);
+        highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
+        updateParamsForNewRowsQuery(params, highkeyElem, descending);
       }
       
       $.ajax({
@@ -70,9 +71,13 @@
         cache: false,
         success: function(data) {
           if (data && data.match(/\S/)) {
-            var elem = $(data);
-            container[containerUpdateMethod](elem);
-            if (opts.success) { opts.success(elem, updateType) };
+            container[containerUpdateMethod](data);
+            
+            if (opts.success) {
+              var newRows;
+              if (highkeyElem) { newRows = descending ? highkeyElem.prevAll() : highkeyElem.nextAll() };
+              opts.success(newRows);
+            }
           }
           inFlight = false;
         },
@@ -111,8 +116,7 @@
     return params;
   }
   
-  function updateParamsForNewRowsQuery(params, container, descending) {
-    var highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
+  function updateParamsForNewRowsQuery(params, highkeyElem, descending) {
     var highkey = highkeyElem.attr('data-key');
     var highkey_docid = highkeyElem.attr('data-docid');
     
