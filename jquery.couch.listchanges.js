@@ -58,31 +58,8 @@
       var containerUpdateMethod = 'html';
       
       if (type === 'newRows') {
-        var highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
-        var highkey = highkeyElem.attr('data-key');
-        var highkey_docid = highkeyElem.attr('data-docid');
-        
-        if (highkey) { delete params.limit };
-
-        if (descending) {
-          containerUpdateMethod = 'prepend';
-          
-          if (highkey) {
-            params.endkey = highkey;
-            params.inclusive_end = false;
-            if (highkey_docid) { params.endkey_docid = highkey_docid };
-            delete params.startkey;
-          }
-        } else {
-          containerUpdateMethod = 'append';
-          
-          if (highkey) { 
-            params.startkey = highkey;
-            params.skip = 1;
-            if (highkey_docid) { params.startkey_docid = highkey_docid };
-            delete params.endkey;
-          }
-        }
+        containerUpdateMethod = descending ? 'prepend' : 'append';
+        updateParamsForNewRowsQuery(params, container, descending);
       }
       
       $.ajax({
@@ -122,7 +99,7 @@
     });
   }
   
-  // helper fun
+  // helper funs
   function getParams(querystring) {
     var params = {};
     if (querystring.length > 1) {  
@@ -132,5 +109,27 @@
       }  
     }
     return params;
+  }
+  
+  function updateParamsForNewRowsQuery(params, container, descending) {
+    var highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
+    var highkey = highkeyElem.attr('data-key');
+    var highkey_docid = highkeyElem.attr('data-docid');
+    
+    if (!highkey) { return };
+    
+    delete params.limit;
+    
+    if (descending) {
+      params.endkey = highkey;
+      params.inclusive_end = false;
+      if (highkey_docid) { params.endkey_docid = highkey_docid };
+      delete params.startkey;
+    } else {
+      params.startkey = highkey;
+      params.skip = 1;
+      if (highkey_docid) { params.startkey_docid = highkey_docid };
+      delete params.endkey;
+    }
   }
 })( jQuery );
