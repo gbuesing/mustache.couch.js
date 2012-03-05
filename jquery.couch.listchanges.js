@@ -107,11 +107,11 @@
     
     container.bind('update.listChanges', queryForUpdates);
     
-    if (opts.preload) { container.trigger('update.listChanges') };
+    if (opts.preload) { container.trigger('update') };
     
     var changes = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
     changes.onChange(function() {
-      container.trigger('update.listChanges');
+      container.trigger('update');
     });
     container.data('changes', changes);
     
