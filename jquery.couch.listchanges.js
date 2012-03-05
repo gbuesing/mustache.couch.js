@@ -113,7 +113,13 @@
     promise.onChange(function() {
       container.trigger('update.listChanges');
     });
-    container.data('changes-promise', promise);
+    container.data('changes', promise);
+    
+    container.bind('stop.listChanges', function() {
+      promise.stop();
+      container.removeData('changes');
+      container.unbind('.listChanges');
+    });
   }
   
   // helper fun
