@@ -41,8 +41,8 @@
   }
   
   function listChanges(container, opts) {
-    var update_seq = opts.updateSeq || container.attr('data-update-seq');
-    var type = opts.updateType || container.attr('data-update-type') || 'allRows';
+    var updateSeq = opts.updateSeq || container.attr('data-update-seq');
+    var updateType = opts.updateType || container.attr('data-update-type') || 'allRows';
     var url = opts.url || window.location.pathname + window.location.search;
     var urlParts = url.split('?');
     var urlPath = urlParts[0];
@@ -57,7 +57,7 @@
       inFlight = true;
       var containerUpdateMethod = 'html';
       
-      if (type === 'newRows') {
+      if (updateType === 'newRows') {
         containerUpdateMethod = descending ? 'prepend' : 'append';
         updateParamsForNewRowsQuery(params, container, descending);
       }
@@ -72,7 +72,7 @@
           if (data && data.match(/\S/)) {
             var elem = $(data);
             container[containerUpdateMethod](elem);
-            if (opts.success) { opts.success(elem, type) };
+            if (opts.success) { opts.success(elem, updateType) };
           }
           inFlight = false;
         },
@@ -86,7 +86,7 @@
     
     if (opts.preload) { container.trigger('update') };
     
-    var changes = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
+    var changes = $.couch.db(dbname).changes(updateSeq, opts.changesOpts);
     changes.onChange(function() {
       container.trigger('update');
     });
