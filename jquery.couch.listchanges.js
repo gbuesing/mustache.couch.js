@@ -105,10 +105,14 @@
       });
     }
     
-    if (opts.preload) { queryForUpdates() };
+    container.bind('update.listChanges', queryForUpdates);
+    
+    if (opts.preload) { container.trigger('update.listChanges') };
     
     var promise = $.couch.db(dbname).changes(update_seq, opts.changesOpts);
-    promise.onChange(queryForUpdates);
+    promise.onChange(function() {
+      container.trigger('update.listChanges');
+    });
     container.data('changes-promise', promise);
   }
   
