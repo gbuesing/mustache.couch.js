@@ -47,7 +47,7 @@
     var urlParts = url.split('?');
     var urlPath = urlParts[0];
     var params = getParams(urlParts[1]);
-    var dbname = urlPath.split('/')[1];    
+    var db = opts.db || urlPath.split('/')[1];    
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true');
     var inFlight = false;
@@ -91,7 +91,7 @@
     
     if (opts.preload) { container.trigger('update') };
     
-    var changes = $.couch.db(dbname).changes(updateSeq, opts.changesOpts);
+    var changes = $.couch.db(db).changes(updateSeq, opts.changesOpts);
     changes.onChange(function() {
       container.trigger('update');
     });
