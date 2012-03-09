@@ -44,12 +44,9 @@
   <script src="jquery.couch.listchanges.js"></script>
   
   <script>
-    // No rows are loaded when page loads, so specify preload: true to immediately populate with rows
-    // (otherwise, you'd have to wait for a change to come through to see content.)
     $('ul#notes').listChanges({
       url: '/mustache-couch-example/_design/example/_list/notes/all?descending=true&limit=10',
-      updateType: 'allRows', // allRows is default. or 'newRows' to have updates prepended
-      preload: true
+      updateType: 'allRows' // allRows is default. or 'newRows' to have updates prepended
     });
   </script>
 </html>

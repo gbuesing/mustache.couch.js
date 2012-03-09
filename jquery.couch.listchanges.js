@@ -50,6 +50,7 @@
     var db = opts.db || urlPath.split('/')[1];    
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true');
+    var preload = !!opts.url;
     var inFlight = false;
     
     var queryForUpdates = function() {
@@ -89,7 +90,7 @@
     
     container.bind('update.listChanges', queryForUpdates);
     
-    if (opts.preload) { container.trigger('update') };
+    if (preload) { container.trigger('update') };
     
     var changes = $.couch.db(db).changes(updateSeq, opts.changesOpts);
     changes.onChange(function() {
