@@ -61,7 +61,7 @@
       if (updateType === 'newRows') {
         containerUpdateMethod = descending ? 'prepend' : 'append';
         highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
-        updateParamsForNewRowsQuery(params, highkeyElem, descending);
+        if (highkeyElem) { updateParamsForNewRowsQuery(params, highkeyElem, descending) };
       }
       
       $.ajax({
