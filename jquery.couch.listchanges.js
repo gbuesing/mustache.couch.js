@@ -107,6 +107,7 @@
     
     container.bind('stop.listChanges', function() {
       changes.stop();
+      queued = false;
       container.removeData('changes');
       container.unbind('.listChanges');
     });
