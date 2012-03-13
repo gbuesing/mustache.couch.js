@@ -42,10 +42,11 @@
       var note = $(this).find('input[name=note]').val();
 
       if (note.match(/\S/)) {
-        $.couch.db('mustache-couch-example').saveDoc({
-          note: note, 
-          created_at: new Date()
-        });
+        // post to update handler to avoid inconsistencies with created_at timestamps 
+        // being dependent on client-side clocks. newRows updates won't behave correctly if
+        // a doc is created with a created_at in the future.
+        // If relying on client-side timestamping, use allRows updateType instead.
+        $.post('/mustache-couch-example/_design/example/_update/add_note', {note: note});
       };
 
       this.reset();
