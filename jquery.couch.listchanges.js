@@ -51,10 +51,13 @@
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true');
     var preload = !!opts.url;
-    var inFlight = false;
+    var inFlight = false, queued = false;
     
     var queryForUpdates = function() {
-      if (inFlight) { return false };
+      if (inFlight) {
+        queued = true; 
+        return;
+      };
       inFlight = true;
       var highkeyElem, containerUpdateMethod = 'html';
       
@@ -81,6 +84,10 @@
             }
           }
           inFlight = false;
+          if (queued) {
+            queued = false;
+            container.trigger('update');
+          };
         },
         error: function() {
           inFlight = false;
