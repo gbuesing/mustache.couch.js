@@ -51,7 +51,7 @@
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true');
     var preload = !!opts.url;
-    var inFlight = false, queued = false;
+    var xhr, inFlight = false, queued = false;
     
     var queryForUpdates = function() {
       if (inFlight) {
@@ -67,7 +67,7 @@
         if (highkeyElem) { updateParamsForNewRowsQuery(params, highkeyElem, descending) };
       }
       
-      $.ajax({
+      xhr = $.ajax({
         type: 'GET',
         url: urlPath,
         data: params,
@@ -107,7 +107,7 @@
     
     container.bind('stop.listChanges', function() {
       changes.stop();
-      queued = false;
+      if (xhr) { xhr.abort() };
       container.removeData('changes');
       container.unbind('.listChanges');
     });
