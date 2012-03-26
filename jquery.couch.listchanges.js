@@ -47,6 +47,8 @@
     });
   }
   
+  var changesDBs = {};
+  
   function listChanges(container, opts) {
     var updateSeq = opts.updateSeq || container.attr('data-update-seq');
     var updateType = opts.updateType || container.attr('data-update-type') || 'allRows';
@@ -111,16 +113,21 @@
     
     if (preload) { container.trigger('update') };
     
-    var changes = $.couch.db(db).changes(updateSeq, opts.changesOpts);
-    changes.onChange(function() {
+    $('body').bind('changes-' + db, function() {
       container.trigger('update');
     });
-    container.data('changes', changes);
+    
+    if (!changesDBs[db]) {
+      changesDBs[db] = true;
+      // onChange, an event ("changes-mydbname") will be triggered on the body,
+      // which allows other listeners to bind to this event and respond to the change
+      $.couch.db(db).changes(updateSeq, opts.changesOpts).onChange(function(resp) {
+        $('body').trigger('changes-' + db, [resp]);
+      });
+    }
     
     container.bind('stop.listChanges', function() {
-      changes.stop();
       if (xhr) { xhr.abort() };
-      container.removeData('changes');
       container.unbind('.listChanges');
     });
   }
