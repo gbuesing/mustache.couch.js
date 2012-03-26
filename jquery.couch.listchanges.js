@@ -22,8 +22,14 @@
  *
  * When data-update-type="newRows", startkey/endkey will be adjusted to return only updated rows. 
  * New rows will be prepended or appended to the container as appropriate with the value of the 
- * descending querystring var. "newRows" requires embedding the row key in each row in a 
- * data-key attribute.
+ * descending querystring var.
+ *
+ * When data-update-type="latestRows", startkey/endkey will be adjusted to return only the high key row *and*
+ * any rows that have been added since the last change was received. The returned HTML will replace the
+ * existing high key row in the DOM. This updateType is useful for updating a table of daily totals, where only
+ * the current day's total will change.
+ *
+ * "newRows" and "latestRows" requires embedding the row key in each row in a data-key attribute.
  *
  * The update_seq can optionally be specified in the data-update-seq attribute; this will save a call to
  * retrieve the update_seq via Ajax after the page has loaded.
@@ -63,10 +69,10 @@
       inFlight = true;
       var highkeyElem, containerUpdateMethod = 'html';
       
-      if (updateType === 'newRows') {
+      if (updateType === 'newRows' || updateType === 'latestRows') {
         containerUpdateMethod = descending ? 'prepend' : 'append';
         highkeyElem = descending ? container.children('[data-key]:first') : container.children('[data-key]:last');
-        if (highkeyElem) { updateParamsForNewRowsQuery(params, highkeyElem, descending) };
+        if (highkeyElem) { updateParamsForNewRowsQuery(params, highkeyElem, descending, updateType) };
       }
       
       xhr = $.ajax({
@@ -77,7 +83,11 @@
         cache: false,
         success: function(data) {
           if (data && data.match(/\S/)) {
-            container[containerUpdateMethod](data);
+            if (updateType === 'latestRows' && highkeyElem) {
+              highkeyElem.replaceWith(data);
+            } else {
+              container[containerUpdateMethod](data);
+            }
             
             if (opts.success) {
               var newRows;
@@ -127,7 +137,7 @@
     return params;
   }
   
-  function updateParamsForNewRowsQuery(params, highkeyElem, descending) {
+  function updateParamsForNewRowsQuery(params, highkeyElem, descending, updateType) {
     var highkey = highkeyElem.attr('data-key');
     var highkey_docid = highkeyElem.attr('data-docid');
     
@@ -137,12 +147,12 @@
     
     if (descending) {
       params.endkey = highkey;
-      params.inclusive_end = false;
+      if (updateType === 'newRows') { params.inclusive_end = false };
       if (highkey_docid) { params.endkey_docid = highkey_docid };
       delete params.startkey;
     } else {
       params.startkey = highkey;
-      params.skip = 1;
+      if (updateType === 'newRows') { params.skip = 1 };
       if (highkey_docid) { params.startkey_docid = highkey_docid };
       delete params.endkey;
     }
