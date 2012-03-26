@@ -50,6 +50,7 @@
   var changesDBs = {};
   
   function listChanges(container, opts) {
+    opts = $.extend({start: true}, opts);
     var updateSeq = opts.updateSeq || container.attr('data-update-seq');
     var updateType = opts.updateType || container.attr('data-update-type') || 'allRows';
     var explicitUrl = opts.url || container.attr('data-url');
@@ -61,9 +62,11 @@
     var db = opts.db || urlPath.split('/')[1];    
     params.rows_only = true;
     var descending = opts.descending || (params.descending === 'true') || container.attr('data-descending');
+    var stopped = !opts.start;
     var xhr, inFlight = false, queued = false;
     
     var queryForUpdates = function() {
+      if (stopped) { return };
       if (inFlight) {
         queued = true; 
         return;
@@ -127,8 +130,13 @@
     }
     
     container.bind('stop.listChanges', function() {
+      stopped = true;
       if (xhr) { xhr.abort() };
-      container.unbind('.listChanges');
+    });
+    
+    container.bind('start.listChanges', function() {
+      stopped = false;
+      container.trigger('update');
     });
   }
   
