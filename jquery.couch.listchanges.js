@@ -128,7 +128,7 @@
   // helper funs
   function getParams(querystring) {
     var params = {};
-    if (querystring.length > 1) {  
+    if (querystring && querystring.length > 1) {  
       for (var aItKey, nKeyId = 0, aCouples = querystring.split("&"); nKeyId < aCouples.length; nKeyId++) {  
         aItKey = aCouples[nKeyId].split("=");  
         params[unescape(aItKey[0])] = aItKey.length > 1 ? unescape(aItKey[1]) : null;  
