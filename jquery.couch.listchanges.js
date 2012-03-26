@@ -130,7 +130,7 @@
     }
     
     container.bind('stop.listChanges', function() {
-      stopped = true;
+      stopped = true; inFlight = false; queued = false;
       if (xhr) { xhr.abort() };
     });
     
