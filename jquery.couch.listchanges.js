@@ -36,21 +36,23 @@
 (function( $ ){
   
   $.fn.listChanges = function(opts) {
-    listChanges(this.eq(0), opts || {});
-    return this;
+    return this.each(function() {
+      listChanges($(this), opts || {});
+    });
   }
   
   function listChanges(container, opts) {
     var updateSeq = opts.updateSeq || container.attr('data-update-seq');
     var updateType = opts.updateType || container.attr('data-update-type') || 'allRows';
-    var url = opts.url || window.location.pathname + window.location.search;
+    var explicitUrl = opts.url || container.attr('data-url');
+    var preload = !!explicitUrl;
+    var url = explicitUrl || window.location.pathname + window.location.search;
     var urlParts = url.split('?');
     var urlPath = urlParts[0];
     var params = getParams(urlParts[1]);
     var db = opts.db || urlPath.split('/')[1];    
     params.rows_only = true;
-    var descending = opts.descending || (params.descending === 'true');
-    var preload = !!opts.url;
+    var descending = opts.descending || (params.descending === 'true') || container.attr('data-descending');
     var xhr, inFlight = false, queued = false;
     
     var queryForUpdates = function() {
