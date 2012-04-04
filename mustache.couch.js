@@ -112,13 +112,10 @@ function defaultRowCb(row, count) {
 }
 
 function mergeData(data, rowData) {
-  var dataCopy = mergeProperties({}, data);
-  return mergeProperties(dataCopy, rowData);
-}
-
-function mergeProperties(receiver, sender) {
-  for (var prop in sender) {
-    receiver[prop] = sender[prop];
+  for (var prop in data) {
+    if (data.hasOwnProperty(prop) && !rowData.hasOwnProperty(prop)) {
+      rowData[prop] = data[prop];
+    }
   }
-  return receiver;
+  return rowData;
 }
