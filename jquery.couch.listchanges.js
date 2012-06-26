@@ -164,12 +164,10 @@
       params.endkey = highkey;
       if (updateType === 'newRows') { params.inclusive_end = false };
       if (highkey_docid) { params.endkey_docid = highkey_docid };
-      delete params.startkey;
     } else {
       params.startkey = highkey;
       if (updateType === 'newRows') { params.skip = 1 };
       if (highkey_docid) { params.startkey_docid = highkey_docid };
-      delete params.endkey;
     }
   }
 })( jQuery );
