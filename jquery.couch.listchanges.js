@@ -158,8 +158,6 @@
     
     if (!highkey) { return };
     
-    delete params.limit;
-    
     if (descending) {
       params.endkey = highkey;
       if (updateType === 'newRows') { params.inclusive_end = false };
